@@ -41,7 +41,7 @@ export default class WelcomeScreen extends React.Component {
         }
         else {
             firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
-                alert("User Added Successfully")
+                alert("User Added Successfully");
             })
                 .catch((error) => {
                     var code = error.code;
