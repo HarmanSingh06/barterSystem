@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextInput, Text, View, TouchableOpacity, StyleSheet, Image, ToastAndroid, KeyboardAvoidingView, Keyboard, Modal, ScrollView } from 'react-native';
+import { TextInput, Text, View, TouchableOpacity, StyleSheet, Image,Alert, ToastAndroid, KeyboardAvoidingView, Keyboard, Modal, ScrollView } from 'react-native';
 import firebase from 'firebase';
 import db from '../config.js';
 
@@ -7,7 +7,6 @@ export default class WelcomeScreen extends React.Component {
     constructor() {
         super()
         this.state = {
-            username: "",
             password: "",
             isModalVisible: false,
             firstName: '',
@@ -19,16 +18,28 @@ export default class WelcomeScreen extends React.Component {
         }
     }
     userSignUp=(email, password, confirmPassword)=> {
-        if (email == '') {
-            //toasts not working.
-            ToastAndroid.show("A pikachu appeared nearby !", ToastAndroid.SHORT);
+        if (password != confirmPassword) {
+            alert("Passwords Do Not Match\n check your passwords");
         }
         else {
             firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
-                //use toast android over here
+                    db.collection("users").add({
+                        first_name:this.state.firstName,
+                        last_name:this.state.lastName,
+                        contact:this.state.contact,
+                        address:this.state.address,
+                        email:this.state.email,
+                        password:this.state.password,
+                    })
+                    return  Alert.alert(
+                        'User Added Successfully',
+                        '',
+                        [
+                          {text: 'OK', onPress: () => this.setState({isModalVisible : false})},
+                        ]
+                    );
             })
                 .catch((error) => {
-                    var code = error.code;
                     var message = error.message;
                     return alert(message)
                 })
@@ -41,7 +52,7 @@ export default class WelcomeScreen extends React.Component {
         }
         else {
             firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
-                alert("User Added Successfully");
+                alert("Logged In");
             })
                 .catch((error) => {
                     var code = error.code;
@@ -137,7 +148,7 @@ export default class WelcomeScreen extends React.Component {
                                 <TouchableOpacity
                                     style={styles.registerButton}
                                     onPress={() =>
-                                        this.userSignUp(this.state.emailId, this.state.password, this.state.confirmPassword)
+                                        this.userSignUp(this.state.email, this.state.password, this.state.confirmPassword)
                                     }
                                 >
                                     <Text style={styles.registerButtonText}>Register</Text>
@@ -146,7 +157,7 @@ export default class WelcomeScreen extends React.Component {
                             <View style={styles.modalBackButton}>
                                 <TouchableOpacity
                                     style={styles.cancelButton}
-                                    onPress={() => this.setState({ "isModalVisible": false })}
+                                    onPress={() => this.setState({ isModalVisible: false })}
                                 >
                                     <Text style={{ color: '#ff5722' }}>Cancel</Text>
                                 </TouchableOpacity>
@@ -170,7 +181,7 @@ export default class WelcomeScreen extends React.Component {
 
                 <TextInput keyboardType='email-address' style={styles.loginBox} placeholder="Username" onChangeText={(text) => {
                     this.setState({
-                        username: text
+                        email: text
                     })
                 }} />
 
@@ -181,7 +192,7 @@ export default class WelcomeScreen extends React.Component {
                 }} />
 
                 <TouchableOpacity style={styles.button} onPress={() => {
-                    this.userSignIn(this.state.username, this.state.password)
+                    this.userSignIn(this.state.email, this.state.password)
                     Keyboard.dismiss()
                 }}>
                     <Text style={{ textAlign: 'center' }} >
@@ -202,16 +213,6 @@ export default class WelcomeScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    loginBox: {
-        width: 250,
-        height: 40,
-        borderWidth: 1.5,
-        fontSize: 20,
-        margin: 10,
-        paddingLeft: 10,
-        marginLeft: 50,
-        borderRadius: 20
-    },
     button: {
         height: 30,
         width: 90,
@@ -245,6 +246,7 @@ const styles = StyleSheet.create({
         borderColor: '#ff8a65',
         fontSize: 20,
         margin: 10,
+        marginLeft:25,
         paddingLeft: 10
     },
     KeyboardAvoidingView: {
