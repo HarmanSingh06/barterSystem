@@ -14,7 +14,7 @@ export default class WelcomeScreen extends React.Component {
     userSignUp(email, password) {
         if (email == '') {
             //toasts not working.
-            ToastAndroid.show("A pikachu appeared nearby !", ToastAndroid.SHORT);
+            ToastAndroid.show("Lets test if this works", ToastAndroid.SHORT);
         }
         else {
             firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
