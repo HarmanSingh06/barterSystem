@@ -52,7 +52,7 @@ export default class WelcomeScreen extends React.Component {
         }
         else {
             firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
-                alert("Logged In");
+                this.props.navigation.navigate("TabNavigator")
             })
                 .catch((error) => {
                     var code = error.code;
