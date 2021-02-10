@@ -11,7 +11,7 @@ export default class WelcomeScreen extends React.Component {
             password: ""
         }
     }
-    userSignUp(email, password) {
+    userSignUp=(email, password)=> {
         if (email == '') {
             //toasts not working.
             ToastAndroid.show("Lets test if this works", ToastAndroid.SHORT);
@@ -27,7 +27,7 @@ export default class WelcomeScreen extends React.Component {
                 })
         }
     }
-    userSignIn(email, password) {
+    userSignIn=(email, password)=> {
         if (email == '') {
             //use taost over here also 
         }
