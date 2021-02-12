@@ -84,6 +84,7 @@ export default class WelcomeScreen extends React.Component {
                                         firstName: text
                                     })
                                 }}
+                                value = {this.state.firstName}
                             />
                             <TextInput
                                 style={styles.formTextInput}
@@ -94,6 +95,7 @@ export default class WelcomeScreen extends React.Component {
                                         lastName: text
                                     })
                                 }}
+                                value = {this.state.lastName}
                             />
                             <TextInput
                                 style={styles.formTextInput}
@@ -105,6 +107,7 @@ export default class WelcomeScreen extends React.Component {
                                         contact: text
                                     })
                                 }}
+                                value = {this.state.contact}
                             />
                             <TextInput
                                 style={styles.formTextInput}
@@ -115,6 +118,7 @@ export default class WelcomeScreen extends React.Component {
                                         address: text
                                     })
                                 }}
+                                value = {this.state.address}
                             />
                             <TextInput
                                 style={styles.formTextInput}
@@ -125,6 +129,7 @@ export default class WelcomeScreen extends React.Component {
                                         email: text
                                     })
                                 }}
+                                value = {this.state.email}
                             /><TextInput
                                 style={styles.formTextInput}
                                 placeholder={"Password"}
@@ -134,6 +139,7 @@ export default class WelcomeScreen extends React.Component {
                                         password: text
                                     })
                                 }}
+                                value = {this.state.password}
                             /><TextInput
                                 style={styles.formTextInput}
                                 placeholder={"Confrim Password"}
@@ -143,12 +149,22 @@ export default class WelcomeScreen extends React.Component {
                                         confirmPassword: text
                                     })
                                 }}
+                                value = {this.state.confirmPassword}
                             />
                             <View style={styles.modalBackButton}>
                                 <TouchableOpacity
                                     style={styles.registerButton}
-                                    onPress={() =>
+                                    onPress={() =>{
                                         this.userSignUp(this.state.email, this.state.password, this.state.confirmPassword)
+                                        this.setState({
+                                                      firstName: '',
+                                                      lastName: '',
+                                                      contact: '',
+                                                      address: '',
+                                                      email: '',
+                                                      confirmPassword: '',
+                                                      password:''
+                                        })}
                                     }
                                 >
                                     <Text style={styles.registerButtonText}>Register</Text>
