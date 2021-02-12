@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { TextInput, Text, View, TouchableOpacity, StyleSheet, Image,Alert, ToastAndroid, KeyboardAvoidingView, Keyboard, Modal, ScrollView } from 'react-native';
+import { TextInput, Text, View, TouchableOpacity, StyleSheet, Image, Alert, ToastAndroid, KeyboardAvoidingView, Keyboard, Modal, ScrollView } from 'react-native';
 import firebase from 'firebase';
 import db from '../config.js';
 
@@ -17,27 +17,27 @@ export default class WelcomeScreen extends React.Component {
             confirmPassword: ''
         }
     }
-    userSignUp=(email, password, confirmPassword)=> {
+    userSignUp = (email, password, confirmPassword) => {
         if (password != confirmPassword) {
             alert("Passwords Do Not Match\n check your passwords");
         }
         else {
             firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
-                    db.collection("users").add({
-                        first_name:this.state.firstName,
-                        last_name:this.state.lastName,
-                        contact:this.state.contact,
-                        address:this.state.address,
-                        email:this.state.email,
-                        password:this.state.password,
-                    })
-                    return  Alert.alert(
-                        'User Added Successfully',
-                        '',
-                        [
-                          {text: 'OK', onPress: () => this.setState({isModalVisible : false})},
-                        ]
-                    );
+                db.collection("users").add({
+                    first_name: this.state.firstName,
+                    last_name: this.state.lastName,
+                    contact: this.state.contact,
+                    address: this.state.address,
+                    email: this.state.email,
+                    password: this.state.password,
+                })
+                return Alert.alert(
+                    'User Added Successfully',
+                    '',
+                    [
+                        { text: 'OK', onPress: () => this.setState({ isModalVisible: false }) },
+                    ]
+                )
             })
                 .catch((error) => {
                     var message = error.message;
@@ -46,9 +46,9 @@ export default class WelcomeScreen extends React.Component {
         }
     }
 
-    userSignIn=(email, password)=> {
-        if (email == '') {
-            alert("Please Enter Your Email")
+    userSignIn = (email, password) => {
+        if (email == '' || password == '') {
+            alert("Please Enter Your Details")
         }
         else {
             firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
@@ -170,7 +170,7 @@ export default class WelcomeScreen extends React.Component {
     }
     render() {
         return (
-            
+
             <KeyboardAvoidingView behavior="padding">
                 <View>
                     {
@@ -192,8 +192,8 @@ export default class WelcomeScreen extends React.Component {
                 }} />
 
                 <TouchableOpacity style={styles.button} onPress={() => {
-                    this.userSignIn(this.state.email, this.state.password)
                     Keyboard.dismiss()
+                    this.userSignIn(this.state.email, this.state.password)
                 }}>
                     <Text style={{ textAlign: 'center' }} >
                         Sign In
@@ -204,7 +204,7 @@ export default class WelcomeScreen extends React.Component {
                     style={styles.button}
                     onPress={() => this.setState({ isModalVisible: true })}
                 >
-                    <Text style={{textAlign:'center'}}>Sign Up</Text>
+                    <Text style={{ textAlign: 'center' }}>Sign Up</Text>
                 </TouchableOpacity>
                 <Text style={{ marginTop: 140, textAlign: 'center' }}>© No One It's all yours</Text>
             </KeyboardAvoidingView>
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
         borderColor: '#ff8a65',
         fontSize: 20,
         margin: 10,
-        marginLeft:25,
+        marginLeft: 25,
         paddingLeft: 10
     },
     KeyboardAvoidingView: {

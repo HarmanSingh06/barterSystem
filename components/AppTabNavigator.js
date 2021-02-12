@@ -5,18 +5,18 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import {Image} from 'react-native';
 
 export const AppTabNavigator = createBottomTabNavigator({
-    DonateBooks : {
+    HomeScreen : {
       screen: HomeScreen,
       navigationOptions :{
         tabBarIcon : <Image source={require("../assets/homeScreen.png")} style={{width:50, height:50}}/>,
-        tabBarLabel : "Donate Books",
+        tabBarLabel : "Home",
       }
     },
-    BookRequest: {
+    ExchangeScreen: {
       screen: ExchangeScreen,
       navigationOptions :{
         tabBarIcon : <Image source={require("../assets/exchangeScreen.png")} style={{width:50, height:35}}/>,
-        tabBarLabel : "Book Request",
+        tabBarLabel : "Exchange",
       }
     }
   });
