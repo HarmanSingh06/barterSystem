@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { List, Divider } from 'react-native-paper';
 import firebase from 'firebase';
 import db from '../config';
 import Header from '../components/Header';
@@ -44,8 +43,8 @@ export default class HomeScreen extends React.Component {
     return (
       <ListItem
         key={i}
-        title={item.item}
-        subtitle={item.description}
+        title={item.item_name}
+        subtitle={item.item_description}
         titleStyle={{ color: 'black', fontWeight: 'bold' }}
         rightElement={
           <TouchableOpacity style={styles.button}>
@@ -58,24 +57,30 @@ export default class HomeScreen extends React.Component {
   };
 
   render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <Header title="Home" />
-        {this.state.requestedItems.length === 0 ? (
-          <View style={styles.subContainer}>
-            <Text style={{ fontSize: 20 }}>List Of All Requested Items</Text>
-          </View>
-        ) : (
-          <View style={{ flex: 1 }}>
-            <FlatList
-              keyExtractor={this.keyExtractor}
-              data={this.state.requestedItems}
-              renderItem={this.renderItem}
-            />
-          </View>
-        )}
+    return(   
+      <View style={{flex:1}}>
+        <View style={{flex:1}}>
+        <Header title="List Of All Items"/>
+          {
+            this.state.requestedItems.length === 0
+            ?(
+              <View style={styles.subContainer}>
+                <Text style={{ fontSize: 20}}>List Of All exchange offers ...</Text>
+              </View>
+            )
+            :(
+                <View>
+              <FlatList
+                keyExtractor={this.keyExtractor}
+                data={this.state.requestedItems}
+                renderItem={this.renderItem}
+              />
+              </View>
+            )
+          }
+        </View>
       </View>
-    );
+      )
   }
 }
 const styles = StyleSheet.create({

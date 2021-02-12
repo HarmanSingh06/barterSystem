@@ -19,7 +19,6 @@
     "react-navigation": "^4.4.3",
     "@expo/vector-icons": "^10.0.0",
     "react-google-login": "^5.2.2",
-    "react-native-paper": "*",
     "@firebase/app-types": "0.x.0",
     "@firebase/firestore": "*",
     "react-native-screens": "~2.9.0",
