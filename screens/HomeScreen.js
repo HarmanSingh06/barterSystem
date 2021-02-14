@@ -71,9 +71,10 @@ export default class HomeScreen extends React.Component {
             :(
                 <View>
               <FlatList
-                keyExtractor={this.keyExtractor}
-                data={this.state.requestedItems}
+              keyExtractor={this.keyExtractor}
+               data={this.state.requestedItems}
                 renderItem={this.renderItem}
+                  
               />
               </View>
             )
