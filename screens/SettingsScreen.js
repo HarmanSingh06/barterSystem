@@ -2,7 +2,7 @@ import React from 'react'
 import {Text,View,TextInput,TouchableOpacity,StyleSheet} from 'react-native';
 import db from '../config'
 import firebase from 'firebase';
-
+import Header from '../components/Header';
 export default class SettingsScreen extends React.Component{
     constructor(){
         super()
@@ -47,8 +47,9 @@ export default class SettingsScreen extends React.Component{
 
     render(){
         return(
+            
           <View style={styles.container} >
-            <MyHeader title="Settings" navigation={this.props.navigation}/>
+              <Header title = "Settigs"/>
             <View style={styles.formContainer}>
                 <TextInput
                   style={styles.formTextInput}
