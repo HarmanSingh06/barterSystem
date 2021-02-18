@@ -8,7 +8,7 @@ import SettingsScreen from './screens/SettingsScreen'
 export default class App extends React.Component{
   render(){
     return(
-      <SettingsScreen/>
+      <AppContainer/>
     )
   }
 }
@@ -16,6 +16,6 @@ const SwitchNavigator = createSwitchNavigator({
   WelcomeScreen:{screen:WelcomeScreen},
   Drawer:{screen:AppDrawerNavigator},
   TabNavigator:{screen:AppTabNavigator},
-
+  Settings:{screen:SettingsScreen}
 })
 const AppContainer = createAppContainer(SwitchNavigator)

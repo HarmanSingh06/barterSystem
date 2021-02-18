@@ -14,7 +14,7 @@ export default class SettingsScreen extends React.Component{
             docId:''
         }
     }
-    getUsersDetails=()=>{
+    getUserDetails=()=>{
         var email = firebase.auth().currentUser.email;
         db.collection("users").where("email","==",email).get().then(snapshot=>{
             snapshot.forEach(doc=>{
@@ -30,7 +30,7 @@ export default class SettingsScreen extends React.Component{
         })
     }
 
-    updateUserDetails(){
+    updateUserDetails=()=>{
         db.collection("users").doc(this.state.docId).update({
             first_name:this.state.firstName,
             last_name:this.state.lastName,
@@ -49,7 +49,7 @@ export default class SettingsScreen extends React.Component{
         return(
             
           <View style={styles.container} >
-              <Header title = "Settigs"/>
+              <Header title = "Settings"/>
             <View style={styles.formContainer}>
                 <TextInput
                   style={styles.formTextInput}
