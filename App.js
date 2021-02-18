@@ -4,7 +4,7 @@ import WelcomeScreen from './screens/welcomeScreen.js';
 import {AppTabNavigator} from './components/AppTabNavigator';
 import {createAppContainer,createSwitchNavigator} from 'react-navigation';
 import {AppDrawerNavigator} from './components/AppDrawerNavigator' 
-
+import SettingsScreen from './screens/SettingsScreen'
 export default class App extends React.Component{
   render(){
     return(
