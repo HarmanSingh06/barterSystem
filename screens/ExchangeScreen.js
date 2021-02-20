@@ -8,23 +8,23 @@ export default class ExchangeScreen extends React.Component {
     constructor() {
         super();
         this.state = {
-            username: '',
+            userId:firebase.auth().currentUser.email,
             itemName: '',
             itemDescription: ''
         }
     }
-    getUserDetails() {
-        var userId = firebase.auth().currentUser.email;
-        db.collection("users").where("email", "==", userId).get().then(snapshot => {
-            snapshot.forEach(doc => {
-                var name = doc.data().first_name + " " + doc.data().last_name;
-                console.log(name)
-                this.setState({
-                    username: name,
-                })
-            })
-        })
-    }
+    // getUserDetails() {
+    //     var userId = firebase.auth().currentUser.email;
+    //     db.collection("users").where("email", "==", userId).get().then(snapshot => {
+    //         snapshot.forEach(doc => {
+    //             var name = doc.data().first_name + " " + doc.data().last_name;
+    //             console.log(name)
+    //             this.setState({
+    //                 username: name,
+    //             })
+    //         })
+    //     })
+    // }
     componentDidMount() {
         this.getUserDetails()
     }
@@ -36,10 +36,12 @@ export default class ExchangeScreen extends React.Component {
             alert("Enter Description");
         }
         else {
+            var randomId = Math.random().toString(36).substring(7);
             db.collection("exchange_requests").add({
-                username: this.state.username,
+                user_id:this.state.userId,
                 item_name: name,
-                item_description: description
+                item_description: description,
+                request_id:randomId
             });
             this.setState({
                 itemName: '',

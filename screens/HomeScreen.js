@@ -47,7 +47,10 @@ export default class HomeScreen extends React.Component {
         subtitle={item.item_description}
         titleStyle={{ color: 'black', fontWeight: 'bold' }}
         rightElement={
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate("RecieverDetails",{"details":item})
+            }}>
             <Text style={{ color: '#ffff' }}>View</Text>
           </TouchableOpacity>
         }
@@ -57,31 +60,31 @@ export default class HomeScreen extends React.Component {
   };
 
   render() {
-    return(   
-      <View style={{flex:1}}>
-        <View style={{flex:1}}>
-        <Header title="List Of All Items"/>
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+          <Header title="List Of All Items" />
           {
             this.state.requestedItems.length === 0
-            ?(
-              <View style={styles.subContainer}>
-                <Text style={{ fontSize: 20}}>List Of All exchange offers ...</Text>
-              </View>
-            )
-            :(
+              ? (
+                <View style={styles.subContainer}>
+                  <Text style={{ fontSize: 20 }}>List Of All exchange offers ...</Text>
+                </View>
+              )
+              : (
                 <View>
-              <FlatList
-              keyExtractor={this.keyExtractor}
-               data={this.state.requestedItems}
-                renderItem={this.renderItem}
-                  
-              />
-              </View>
-            )
+                  <FlatList
+                    keyExtractor={this.keyExtractor}
+                    data={this.state.requestedItems}
+                    renderItem={this.renderItem}
+
+                  />
+                </View>
+              )
           }
         </View>
       </View>
-      )
+    )
   }
 }
 const styles = StyleSheet.create({
