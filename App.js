@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Text,View} from 'react-native';
 import WelcomeScreen from './screens/welcomeScreen.js';
 import {AppTabNavigator} from './components/AppTabNavigator';
+import {AppStackNavigator} from 'components/AppStackNavigator';
 import {createAppContainer,createSwitchNavigator} from 'react-navigation';
 import {AppDrawerNavigator} from './components/AppDrawerNavigator' 
 import SettingsScreen from './screens/SettingsScreen'
@@ -16,6 +17,7 @@ const SwitchNavigator = createSwitchNavigator({
   WelcomeScreen:{screen:WelcomeScreen},
   Drawer:{screen:AppDrawerNavigator},
   TabNavigator:{screen:AppTabNavigator},
-  Settings:{screen:SettingsScreen}
+  Settings:{screen:SettingsScreen},
+  StackNavigator:{screen:AppStackNavigator}
 })
 const AppContainer = createAppContainer(SwitchNavigator)

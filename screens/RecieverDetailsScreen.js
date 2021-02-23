@@ -14,11 +14,9 @@ export default class RecieverDetailsScreen extends React.Component {
             itemDescription: this.props.navigation.navigate.getParam("details")["item_description"],
             recieverId: this.props.navigation.navigate.getParam("details")["user_id"],
             requestId: this.props.navigation.navigate.getParam("details")["random_id"],
-            recieverName: '',
+            recieverName:'',
+            donorName: '',
             recieverRequestDocId: '',
-            recieverAddress: '',
-            recieverContact: ''
-
         }
     }
     getUserDetails = () => {
@@ -26,10 +24,9 @@ export default class RecieverDetailsScreen extends React.Component {
             .then(snapshot => {
                 snapshot.forEach(doc => {
                     this.setState({
-                        recieverName: doc.data().first_name,
-                        recieverAddress: doc.date().address,
-                        recieverContact: doc.data().contact,
-
+                      donorName: doc.data().first_name,
+                      donorAddress: doc.date().address,
+                      donorContact: doc.data().contact,
                     })
                 })
             })
@@ -43,13 +40,22 @@ export default class RecieverDetailsScreen extends React.Component {
             })
     }
     updateItemStatus = () => {
-        db.collection("all_item_requests").add({
+        db.collection("all_item_donations").add({
             item_name:this.state.bookName,
             item_description:this.state.itemDescription,
             requested_by:this.state.recieverName
         })
     }
-
+    addNotification=()=>{
+      var message = this.state.donorName + ''+ "Wants to donate"
+      db.collection("allNotifications").add({
+        targetUserId:this.state.recieverId,
+        donor_id: this.state.userId,
+        date:firebase.firestore.FieldValue.serverTimestamp(),
+        message:message,
+        notification_status:"unread"
+      }) 
+    }
     componentDidMount(){
         this.getUserDetails()
     }
