@@ -32,8 +32,8 @@ export default class MyHeader extends React.Component {
       return (
         <View>
           <Icon
-            name="bell"
-            type="font-awesome"
+            name="notification"
+            type="antdesign"
             color="#696969"
             size={25}
             onPress={() => this.props.navigation.navigate('Notifications')}
@@ -51,7 +51,7 @@ export default class MyHeader extends React.Component {
         leftComponent={
           <Icon
             name="bars"
-            type="font-awesome"
+            type="antdesign"
             color="#696969"
             onPress={() => this.props.navigation.toggleDrawer()}
           />

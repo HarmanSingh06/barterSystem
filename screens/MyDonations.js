@@ -10,7 +10,8 @@ export default class MyDonations extends React.Component{
     this.state = {
       donorId:firebase.auth().currentUser.email,
       donorName:'',
-      allDonations:[]
+      allDonations:[],
+      targetUserId:'',
     }
     this.requestRef = null
   }
@@ -54,9 +55,10 @@ export default class MyDonations extends React.Component{
         this.sendNotification(itemDetails,"Item Sent")
       }
     }
-  sendNotification=(itemDetails,requestStatus)=>{
+  sendNotification=async(itemDetails,requestStatus)=>{
     var requestId = itemDetails.request_id
     var donorId = itemDetails.donor_id
+    var pushToken = itemDetails.target_notification_push_token;
     db.collection("all_notification")
     .where("request_id","==",requestId)
     .where("donor_id","==",donorId)
@@ -74,6 +76,19 @@ export default class MyDonations extends React.Component{
           "date": firebase.firestore.FieldValue.serverTimestamp()
         })
       })
+    })
+    const pushMessage = {
+      to:pushToken,
+      title:'Item Sent',
+      body:message
+    }
+    await fetch('https://exp.host/--/api/v2/push/send',{
+      method:'POST',
+      headers:{
+        'Accept-encoding':'gzip, deflate',
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify(pushMessage)
     })
   }
 

@@ -10,6 +10,8 @@ import { List } from 'react-native-paper';
 import firebase from 'firebase';
 import db from '../config';
 import Header from '../components/Header';
+import * as Notifications from 'expo-notifications'
+import * as Permissions from 'expo-permissions';
 
 export default class HomeScreen extends React.Component {
    constructor(props) {
@@ -17,25 +19,57 @@ export default class HomeScreen extends React.Component {
     this.state = {
       userId: firebase.auth().currentUser.email,
       requestedItems: [],
+      userDocId:'',
     };
     this.request_ref = null;
   }
-
+getUserDetails=()=>{
+  db.collection("users")
+  .where("email","==",this.state.userId)
+  .onSnapshot(snapshot =>{
+    snapshot.forEach(doc => {
+      this.setState({
+        userDocId:doc.id
+      })
+    })
+  })
+}
   getRequestedItems = () => {
     this.request_ref = db
       .collection('exchange_requests')
       .onSnapshot((snapshot) => {
-        var booksList = snapshot.docs.map((doc) => doc.data());
+        var itemsList = snapshot.docs.map((doc) => doc.data());
         this.setState({
-          requestedItems: booksList,
+          requestedItems: itemsList,
         });
       });
   };
-  componentDidMount() {
-    this.getRequestedItems();
-  }
+  registerForPushNotifications=async()=>{
+    const {status} = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+    var finalStatus = status
+    if(status !== "granted"){
+        const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        finalStatus = status
+    }
+    if(finalStatus !== "granted"){
+        alert("Notifications Permission Not Granted")
+        return;
+    }
 
-
+    var token = (await Notifications.getExpoPushTokenAsync()).data
+    return token;
+}
+  async componentDidMount(){
+    this.getRequestedItems()
+    this.getUserDetails()
+    await this.registerForPushNotifications()
+    .then((token)=>{
+      db.collection("users").doc(this.state.userDocId).add({
+        pushToken:token
+      })
+    })
+    .catch(error=>console.log(error))
+} 
   renderItem = ({ item, i }) => {
     return (
       <List.Item
@@ -53,7 +87,7 @@ export default class HomeScreen extends React.Component {
   render() {
   
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.container}>
         <View style={{ flex: 1 }}>
           <Header title="List Of All Items" navigation = {this.props.navigation}/>
           {
@@ -97,4 +131,8 @@ const styles = StyleSheet.create({
       height: 8,
     },
   },
+  container:{
+    flex:1,
+    backgroundColor:"rgba(255, 250, 242,0.5)"
+  }
 });

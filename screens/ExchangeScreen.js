@@ -29,39 +29,45 @@ export default class ExchangeScreen extends React.Component {
       docId: '',
       userDocId: '',
       value: '',
-      currencyCode:''
+      currencyCode:'',
+      pushToken:'',
     };
   }
 
   getUserDetails() {
-    var userId = firebase.auth().currentUser.email;
     db.collection('users')
-      .where('email', '==', userId)
+      .where('email', '==', this.state.userId)
       .get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
           var name = doc.data().first_name + ' ' + doc.data().last_name;
+
           this.setState({
             username: name,
-            currencyCode:doc.data().currency_code
+            currencyCode:doc.data().currency_code,
+            pushToken:doc.data().pushToken
           });
         });
       });
+      console.log(this.state.pushToken)
   }
-  addItem = (name, description) => {
+
+  addItem =async (name, description) => {
     if (this.state.itemName == '') {
       alert('Enter Item Name');
     } else if (this.state.itemDescription == '') {
       alert('Enter Description');
     } else {
-      var randomId = Math.random().toString(36).substring(7);
-      db.collection('exchange_requests').add({
-        user_id: this.state.userId,
-        item_name: name,
-        item_description: description,
-        request_id: randomId,
-        item_status: 'requested',
-        value: this.state.value,
+      var randomId = Math.random().toString(36).slice(2)
+      console.log(this.state.userId,name,description,randomId,this.state.value,this.state.pushToken)
+     await db.collection('exchange_requests').add({
+        "user_id": this.state.userId,
+        "item_name": name,
+        "item_description": description,
+        "request_id":randomId ,
+        "item_status": 'requested',
+        "value": this.state.value,
+        "target_notification_push_token":this.state.pushToken
       });
       this.setState({
         itemName: '',
@@ -96,8 +102,9 @@ export default class ExchangeScreen extends React.Component {
       .then((snapshot) => {
         snapshot.forEach((doc) => {
           if (doc.data().item_status !== 'recieved') {
+            console.log(doc.data().request_id)
             this.setState({
-              requestedId: doc.data().requestId,
+              requestId: doc.data().request_id,
               requestedItemName: doc.data().item_name,
               itemStatus: doc.data().item_status,
               value:doc.data().value,
@@ -136,12 +143,13 @@ export default class ExchangeScreen extends React.Component {
       });
   }
   updateItemRequestStatus = () => {
-    db.collection('requested_books').doc(this.state.docId).update({
+    db.collection("exchange_requests").doc(this.state.docId).update({
       book_status: 'recieved',
     });
     db.collection('users').doc(this.state.userDocId).update({
       isExchangeRequestActive: false,
     });
+
   };
 
   sendNotification = () => {
@@ -172,18 +180,20 @@ export default class ExchangeScreen extends React.Component {
   receivedItems = (itemName) => {
     var userId = this.state.userId;
     var requestId = this.state.requestId;
-    db.collection('recieved_books').add({
+    console.log(userId,itemName,requestId)
+    db.collection('recieved_items').add({
       user_id: userId,
       item_name: itemName,
       requestId: requestId,
       item_status: 'recieved',
     });
   };
-  componentDidMount() {
-    this.getIsItemRequestActive();
-    this.getUserDetails();
-    this.getItemRequest();
-    this.getData()
+
+  async componentDidMount() {
+    await this.getIsItemRequestActive();
+    await this.getUserDetails();
+    await this.getItemRequest();
+    await this.getData()
   }
 
   render() {
@@ -240,7 +250,7 @@ export default class ExchangeScreen extends React.Component {
             onPress={() => {
               this.sendNotification();
               this.updateItemRequestStatus();
-              this.receivedItems(this.state.requestedBookName);
+              this.receivedItems(this.state.requestedItemName);
             }}>
             <Text>I recieved the Item </Text>
           </TouchableOpacity>

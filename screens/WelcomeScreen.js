@@ -3,15 +3,8 @@ import { TextInput, Text, View, TouchableOpacity, StyleSheet, Image, Alert, Toas
 import firebase from 'firebase';
 import db from '../config.js';
 import {Input} from 'react-native-elements';
-import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions'
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
+import * as Notifications from 'expo-notifications'
+import * as Permissions from 'expo-permissions';
 
 export default class WelcomeScreen extends React.Component {
     constructor() {
@@ -58,39 +51,28 @@ export default class WelcomeScreen extends React.Component {
                 })
         }
     }
-async registerForPushNotificationsAsync() {
-        let token;
-          const { status: existingStatus } = await Notifications.getPermissionsAsync();
-          let finalStatus = existingStatus;
-          if (existingStatus !== 'granted') {
-            const { status } = await Permissions.NOTIFICATIONS;
-            finalStatus = status;
-          }
-        //   if (finalStatus !== 'granted') {
-        //     alert('Failed to get push token for push notification!');
-        //     return;
-        //   }
-          token = (await Notifications.getExpoPushTokenAsync()).data;
-          console.log(token);
-  
-        if (Platform.OS === 'android') {
-          Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-          });
-        }
-      
-        return token;
-      }
+
+// registerForPushNotifications=async()=>{
+//     const {status} = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+//     var finalStatus = status
+//     if(status !== "granted"){
+//         const {status} = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+//         finalStatus = status
+//     }
+//     if(finalStatus !== "granted"){
+//         alert("Notifications Permission Not Granted")
+//         return;
+//     }
+
+//     var token = (await Notifications.getExpoPushTokenAsync()).data
+//     return token;
+// }
     userSignIn = (email, password) => {
-        Notifications.requestPermissionsAsync();
         if (email == '' || password == '') {
             alert("Please Enter Your Details")
         }
         else {
-            this.registerForPushNotificationsAsync()
+     
             firebase.auth().signInWithEmailAndPassword(email, password).then(() => {
                 this.props.navigation.navigate("TabNavigator")
             })
@@ -102,7 +84,11 @@ async registerForPushNotificationsAsync() {
         }
     }
 
-                            
+    //  componentDidMount(){
+    //      this.registerForPushNotifications()
+    //      .then(token=>console.log(token))
+    //      .catch(error=>console.log(error))
+    //  }                       
                   
     showModal = () => {
         return (
@@ -245,7 +231,6 @@ async registerForPushNotificationsAsync() {
                 }} />
 
                 <TouchableOpacity style={styles.button} onPress={() => {
-                    
                     Keyboard.dismiss()
                     this.userSignIn(this.state.email, this.state.password)
                 }}>

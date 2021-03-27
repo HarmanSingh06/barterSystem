@@ -23,6 +23,7 @@ export default class RecieverDetailsScreen extends React.Component {
       recieverEmailAddress: '',
       recieverContact: '',
       recieverRequestDocId: '',
+      recieverPushToken:''
     };
   }
   static navigationOptions = {header:null}
@@ -50,10 +51,11 @@ export default class RecieverDetailsScreen extends React.Component {
             recieverAddress: doc.data().address,
             recieverContact: doc.data().contact,
             recieverEmailAddress: doc.data().email,
+            recieverPushToken:doc.data().pushToken
           });
         });
       });
-
+console.log(this.state.recieverPushToken)
     db.collection('exchange_requests')
       .where('request_id', '==', this.state.requestId)
       .get()
@@ -65,7 +67,7 @@ export default class RecieverDetailsScreen extends React.Component {
         });
       });
   }
-  addNotification = () => {
+  addNotification = async() => {
     var message = this.state.userName + ' ' + 'Wants to Exchange Item';
     db.collection('all_notifications').add({
       item_name: this.state.itemName,
@@ -77,6 +79,20 @@ export default class RecieverDetailsScreen extends React.Component {
       notification_status: 'unread',
       message: message,
     });
+  
+    const pushMessage = {
+      to:this.state.recieverPushToken,
+      title:'Request Accepted',
+      body:message
+    }
+    await fetch('https://exp.host/--/api/v2/push/send',{
+      method:'POST',
+      headers:{
+        'Accept-encoding':'gzip, deflate',
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify(pushMessage)
+    })
   };
   updateItemStatus = () => {
     db.collection('all_item_donations').add({
@@ -129,7 +145,7 @@ export default class RecieverDetailsScreen extends React.Component {
 
         <TouchableOpacity
           onPress={() => {
-            this.addNotification();
+            this.addNotification(this.state.recieverPushToken);
             this.updateItemStatus();
           }}>
           <Text>Exchange</Text>
