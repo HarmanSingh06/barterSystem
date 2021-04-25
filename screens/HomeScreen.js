@@ -1,109 +1,139 @@
-import * as React from 'react';
+import React from 'react';
 import {
   Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
   View,
+  TextInput,
+  TouchableOpacity,
+  Modal,
+  KeyboardAvoidingView,
 } from 'react-native';
-import { ListItem } from 'react-native-elements';
-import firebase from 'firebase';
-import db from '../config';
-import Header from '../components/Header';
+
+import db from '../configDatabase';
 
 export default class HomeScreen extends React.Component {
   constructor() {
     super();
     this.state = {
-      userId: firebase.auth().currentUser.email,
-      requestedItems: [],
+      id: '',
+      link: '',
+      roomId: '',
+      isCreateSessionModalVisible: false,
+      isJoinSessionModalVisible: false,
     };
-    this.request_ref = null;
   }
 
-  getRequestedItems = () => {
-    this.request_ref = db
-      .collection('exchange_requests')
-      .onSnapshot((snapshot) => {
-        var booksList = snapshot.docs.map((doc) => doc.data());
-        this.setState({
-          requestedItems: booksList,
-        });
-      });
-  };
-  componentDidMount() {
-    this.getRequestedItems();
-  }
-  componentWillUnmount() {
-    this.requestRef();
-  }
-  keyExtractor = (item, index) => index.toString();
-
-  renderItem = ({ item, i }) => {
+  //The Modals----------------------------------------------------------------
+  showCreateSessionModal() {
     return (
-      <ListItem
-        key={i}
-        title={item.item_name}
-        subtitle={item.item_description}
-        titleStyle={{ color: 'black', fontWeight: 'bold' }}
-        rightElement={
-          <TouchableOpacity style={styles.button}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.isCreateSessionModalVisible}>
+        <KeyboardAvoidingView>
+          <Text>Video Link</Text>
+          <TextInput
+            placeholder="URL of the Video"
+            onChangeText={(text) => {
+              this.setState({
+                link: text,
+              });
+            }}
+          />
+          <TouchableOpacity
             onPress={() => {
-              this.props.navigation.navigate("RecieverDetails",{"details":item})
+              this.createSession();
             }}>
-            <Text style={{ color: '#ffff' }}>View</Text>
+
+            <Text>Create</Text>
           </TouchableOpacity>
-        }
-        bottomDivider
-      />
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                isCreateSessionModalVisible:false
+              });
+            }}>
+            <Text>Close</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </Modal>
     );
+  }
+
+  showJoinSessionModal() {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.isJoinSessionModalVisible}>
+        <KeyboardAvoidingView>
+          <Text>Video Link</Text>
+          <TextInput
+            placeholder="Room Id"
+            onChangeText={(text) => {
+              this.setState({
+                roomId: text,
+              });
+            }}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('ChildPlayer', {
+                sessionId: this.state.roomId,
+              });
+            }}>
+            <Text>Join</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.setState({
+                isJoinSessionModalVisible:false
+              });
+            }}>
+            <Text>Close</Text>
+          </TouchableOpacity>
+        </KeyboardAvoidingView>
+      </Modal>
+    );
+  }
+  //The modals ------------------------------------------------------------------------------
+
+  createSession = () => {
+    var id = this.state.link.slice(32);
+    const sessionId = Math.random().toString(36).substring(7);
+    db.ref('sessions/' + sessionId).set({
+      id: id,
+      time: 0,
+      state: 0,
+    });
+    this.props.navigation.navigate('HostPlayer', {
+      id: id,
+      session: sessionId,
+    });
   };
 
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
-          <Header title="List Of All Items" />
-          {
-            this.state.requestedItems.length === 0
-              ? (
-                <View style={styles.subContainer}>
-                  <Text style={{ fontSize: 20 }}>List Of All exchange offers ...</Text>
-                </View>
-              )
-              : (
-                <View>
-                  <FlatList
-                    keyExtractor={this.keyExtractor}
-                    data={this.state.requestedItems}
-                    renderItem={this.renderItem}
+      <View>
+        {this.showCreateSessionModal()}
+        {this.showJoinSessionModal()}
+        <TouchableOpacity
+          onPress={() => {
+            this.setState({
+              isJoinSessionModalVisible: true,
+            });
+          }}>
+          <Text>Join Session</Text>
+        </TouchableOpacity>
 
-                  />
-                </View>
-              )
-          }
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            this.setState({
+              isCreateSessionModalVisible: true,
+            });
+          }}>
+          <Text>Create Session</Text>
+        </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
-const styles = StyleSheet.create({
-  subContainer: {
-    flex: 1,
-    fontSize: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    width: 100,
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#ff5722',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-  },
-});

@@ -1,23 +1,38 @@
-import * as React from 'react';
-import {Text,View} from 'react-native';
-import WelcomeScreen from './screens/welcomeScreen.js';
-import {AppTabNavigator} from './components/AppTabNavigator';
-import {AppStackNavigator} from 'components/AppStackNavigator';
-import {createAppContainer,createSwitchNavigator} from 'react-navigation';
-import {AppDrawerNavigator} from './components/AppDrawerNavigator' 
-import SettingsScreen from './screens/SettingsScreen'
+import React from 'react';
+import {StatusBar,View} from 'react-native';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation'
+
+//importing screens
+import WelcomeScreen from './screens/WelcomeScreen'
+import HomeScreen from './screens/HomeScreen';
+import SessionsScreen from './screens/SessionsScreen'
+
+
+//Importing THe Players
+import HostPlayer from './screens/HostPlayer'
+import ChildPlayer from './screens/ChildPlayer'
+
+import {AppDrawerNavigator} from './components/AppDrawerNavigator';
+//importing the navigators
+import {AppTabNavigator} from './components/TabNavigator.js';
+
+
 export default class App extends React.Component{
   render(){
     return(
+      <View style={{ flex: 1, marginTop: StatusBar.currentHeight }}>
       <AppContainer/>
+      </View>
     )
   }
 }
-const SwitchNavigator = createSwitchNavigator({
+
+const AppNavigator = createSwitchNavigator({
   WelcomeScreen:{screen:WelcomeScreen},
   Drawer:{screen:AppDrawerNavigator},
+  HostPlayer:{screen:HostPlayer},
+  ChildPlayer:{screen:ChildPlayer},
   TabNavigator:{screen:AppTabNavigator},
-  Settings:{screen:SettingsScreen},
-  StackNavigator:{screen:AppStackNavigator}
-})
-const AppContainer = createAppContainer(SwitchNavigator)
+});
+
+const AppContainer = createAppContainer(AppNavigator);

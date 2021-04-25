@@ -1,20 +1,16 @@
-import * as React from 'react';
-import CustomSidebarMenu from './customSideBarMenu';
 import {createDrawerNavigator} from 'react-navigation-drawer';
-import {AppTabNavigator} from './AppTabNavigator'
-import SettingsScreen from '../screens/SettingsScreen';
+import {AppTabNavigator} from './TabNavigator';
+import CustomSidebarMenu from './CustomDrawerNavigator';
+
 
 export const AppDrawerNavigator = createDrawerNavigator({
-    Home:{
-        screen:AppTabNavigator
-    },
-    Settings:{
-        screen:SettingsScreen
-    }
+  Home:{
+    screen:AppTabNavigator
+  }
 },
 {
-    contentComponent:CustomSidebarMenu
+  contentComponent:CustomSidebarMenu
 },
 {
-    initialRouteName:"Home"
+  initialRouteName:'Home'
 })
